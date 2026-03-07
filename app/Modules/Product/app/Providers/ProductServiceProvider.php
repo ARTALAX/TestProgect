@@ -5,8 +5,6 @@ namespace Modules\Product\Providers;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
 use Nwidart\Modules\Traits\PathNamespace;
-use RecursiveDirectoryIterator;
-use RecursiveIteratorIterator;
 
 class ProductServiceProvider extends ServiceProvider
 {
@@ -26,7 +24,7 @@ class ProductServiceProvider extends ServiceProvider
         $this->registerTranslations();
         $this->registerConfig();
         $this->registerViews();
-        $this->loadMigrationsFrom(module_path($this->name, 'database/migrations'));
+        $this->loadMigrationsFrom(paths: module_path(name: $this->name, path: 'database/migrations'));
     }
 
     /**
@@ -39,7 +37,49 @@ class ProductServiceProvider extends ServiceProvider
     }
 
     /**
-     * Register commands in the format of Command::class
+     * Register translations.
+     */
+    public function registerTranslations(): void
+    {
+        $langPath = resource_path(path: 'lang/modules/'.$this->nameLower);
+
+        if (is_dir(filename: $langPath)) {
+            $this->loadTranslationsFrom(path: $langPath, namespace: $this->nameLower);
+            $this->loadJsonTranslationsFrom(path: $langPath);
+        } else {
+            $this->loadTranslationsFrom(path: module_path(name: $this->name, path: 'lang'), namespace: $this->nameLower);
+            $this->loadJsonTranslationsFrom(path: module_path(name: $this->name, path: 'lang'));
+        }
+    }
+
+    /**
+     * Register views.
+     */
+    public function registerViews(): void
+    {
+        $viewPath = resource_path(path: 'views/modules/'.$this->nameLower);
+        $sourcePath = module_path(name: $this->name, path: 'resources/views');
+
+        $this->publishes(paths: [$sourcePath => $viewPath], groups: ['views', $this->nameLower.'-module-views']);
+
+        $this->loadViewsFrom(path: array_merge($this->getPublishableViewPaths(), [$sourcePath]), namespace: $this->nameLower);
+
+        Blade::componentNamespace(config(key: 'modules.namespace').'\\'.$this->name.'\View\Components', $this->nameLower);
+    }
+
+    /**
+     * Get the services provided by the provider.
+     */
+    /**
+     * @return array<int, string>
+     */
+    public function provides(): array
+    {
+        return [];
+    }
+
+    /**
+     * Register commands in the format of Command::class.
      */
     protected function registerCommands(): void
     {
@@ -58,49 +98,33 @@ class ProductServiceProvider extends ServiceProvider
     }
 
     /**
-     * Register translations.
-     */
-    public function registerTranslations(): void
-    {
-        $langPath = resource_path('lang/modules/'.$this->nameLower);
-
-        if (is_dir($langPath)) {
-            $this->loadTranslationsFrom($langPath, $this->nameLower);
-            $this->loadJsonTranslationsFrom($langPath);
-        } else {
-            $this->loadTranslationsFrom(module_path($this->name, 'lang'), $this->nameLower);
-            $this->loadJsonTranslationsFrom(module_path($this->name, 'lang'));
-        }
-    }
-
-    /**
      * Register config.
      */
     protected function registerConfig(): void
     {
-        $configPath = module_path($this->name, config('modules.paths.generator.config.path'));
+        $configPath = module_path(name: $this->name, path: config(key: 'modules.paths.generator.config.path'));
 
-        if (is_dir($configPath)) {
-            $iterator = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($configPath));
+        if (is_dir(filename: $configPath)) {
+            $iterator = new \RecursiveIteratorIterator(iterator: new \RecursiveDirectoryIterator(directory: $configPath));
 
             foreach ($iterator as $file) {
-                if ($file->isFile() && $file->getExtension() === 'php') {
-                    $config = str_replace($configPath.DIRECTORY_SEPARATOR, '', $file->getPathname());
-                    $config_key = str_replace([DIRECTORY_SEPARATOR, '.php'], ['.', ''], $config);
-                    $segments = explode('.', $this->nameLower.'.'.$config_key);
+                if ($file->isFile() && 'php' === $file->getExtension()) {
+                    $config = str_replace(search: $configPath.DIRECTORY_SEPARATOR, replace: '', subject: $file->getPathname());
+                    $config_key = str_replace(search: [DIRECTORY_SEPARATOR, '.php'], replace: ['.', ''], subject: $config);
+                    $segments = explode(separator: '.', string: $this->nameLower.'.'.$config_key);
 
                     // Remove duplicated adjacent segments
                     $normalized = [];
                     foreach ($segments as $segment) {
-                        if (end($normalized) !== $segment) {
+                        if (end(array: $normalized) !== $segment) {
                             $normalized[] = $segment;
                         }
                     }
 
-                    $key = ($config === 'config.php') ? $this->nameLower : implode('.', $normalized);
+                    $key = ('config.php' === $config) ? $this->nameLower : implode(separator: '.', array: $normalized);
 
-                    $this->publishes([$file->getPathname() => config_path($config)], 'config');
-                    $this->merge_config_from($file->getPathname(), $key);
+                    $this->publishes(paths: [$file->getPathname() => config_path(path: $config)], groups: 'config');
+                    $this->merge_config_from(path: $file->getPathname(), key: $key);
                 }
             }
         }
@@ -111,40 +135,17 @@ class ProductServiceProvider extends ServiceProvider
      */
     protected function merge_config_from(string $path, string $key): void
     {
-        $existing = config($key, []);
+        $existing = config(key: $key, default: []);
         $module_config = require $path;
 
-        config([$key => array_replace_recursive($existing, $module_config)]);
+        config(key: [$key => array_replace_recursive($existing, $module_config)]);
     }
-
-    /**
-     * Register views.
-     */
-    public function registerViews(): void
-    {
-        $viewPath = resource_path('views/modules/'.$this->nameLower);
-        $sourcePath = module_path($this->name, 'resources/views');
-
-        $this->publishes([$sourcePath => $viewPath], ['views', $this->nameLower.'-module-views']);
-
-        $this->loadViewsFrom(array_merge($this->getPublishableViewPaths(), [$sourcePath]), $this->nameLower);
-
-        Blade::componentNamespace(config('modules.namespace').'\\' . $this->name . '\\View\\Components', $this->nameLower);
-    }
-
-    /**
-     * Get the services provided by the provider.
-     */
-    public function provides(): array
-    {
-        return [];
-    }
-
+    /** @return string[] */
     private function getPublishableViewPaths(): array
     {
         $paths = [];
-        foreach (config('view.paths') as $path) {
-            if (is_dir($path.'/modules/'.$this->nameLower)) {
+        foreach (config(key: 'view.paths') as $path) {
+            if (is_dir(filename: $path.'/modules/'.$this->nameLower)) {
                 $paths[] = $path.'/modules/'.$this->nameLower;
             }
         }

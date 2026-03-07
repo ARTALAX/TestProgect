@@ -17,7 +17,7 @@ class RouteServiceProvider extends ServiceProvider
     public function boot(): void
     {
         parent::boot();
-//        Route::model('product', \Modules\Product\Models\Product::class);
+        //        Route::model('product', \Modules\Product\Models\Product::class);
     }
 
     /**
@@ -36,7 +36,7 @@ class RouteServiceProvider extends ServiceProvider
      */
     protected function mapWebRoutes(): void
     {
-        Route::middleware('web')->group(module_path($this->name, '/routes/web.php'));
+        Route::middleware('web')->group(callback: module_path(name: $this->name, path: '/routes/web.php'));
     }
 
     /**
@@ -46,6 +46,6 @@ class RouteServiceProvider extends ServiceProvider
      */
     protected function mapApiRoutes(): void
     {
-        Route::middleware('api')->prefix('api')->name('api.')->group(module_path($this->name, '/routes/api.php'));
+        Route::middleware('api')->prefix('api')->name('api.')->group(callback: module_path(name: $this->name, path: '/routes/api.php'));
     }
 }

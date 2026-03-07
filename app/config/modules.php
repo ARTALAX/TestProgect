@@ -4,7 +4,6 @@ use Nwidart\Modules\Activators\FileActivator;
 use Nwidart\Modules\Providers\ConsoleServiceProvider;
 
 return [
-
     /*
     |--------------------------------------------------------------------------
     | Module Namespace
@@ -39,7 +38,7 @@ return [
             'package' => 'package.json',
         ],
         'replacements' => [
-            /**
+            /*
              * Define custom replacements for each section.
              * You can specify a closure for dynamic values.
              *
@@ -213,7 +212,6 @@ return [
         |
         */
         'translations' => false,
-
     ],
 
     /*
@@ -272,9 +270,7 @@ return [
     */
     'register' => [
         'translations' => true,
-        /**
-         * load files on boot or register method
-         */
+        // load files on boot or register method
         'files' => 'register',
     ],
 

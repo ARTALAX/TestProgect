@@ -1,12 +1,12 @@
 <?php
 
-use Modules\User\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Modules\User\Models\User;
 use Tests\TestCase;
 
 uses(TestCase::class, RefreshDatabase::class);
 
-it('can register a new user', function () {
+it(description: 'can register a new user', closure: function (): void {
     $response = $this->postJson('/api/register', [
         'name' => 'Test User',
         'email' => 'test@example.com',
@@ -14,7 +14,8 @@ it('can register a new user', function () {
     ]);
 
     $response->assertStatus(200)
-        ->assertJsonStructure(['token']);
+        ->assertJsonStructure(['token'])
+    ;
 
     // Проверяем, что пользователь появился в базе
     $this->assertDatabaseHas('users', [
@@ -23,11 +24,11 @@ it('can register a new user', function () {
     ]);
 });
 
-it('can login with correct credentials', function () {
+it(description: 'can login with correct credentials', closure: function (): void {
     // Создаём пользователя
-    $user = User::factory()->create([
+    $user = User::factory()->create(attributes: [
         'email' => 'login@example.com',
-        'password' => bcrypt('secret123'),
+        'password' => bcrypt(value: 'secret123'),
     ]);
 
     $response = $this->postJson('/api/login', [
@@ -36,13 +37,14 @@ it('can login with correct credentials', function () {
     ]);
 
     $response->assertStatus(200)
-        ->assertJsonStructure(['token']);
+        ->assertJsonStructure(['token'])
+    ;
 });
 
-it('cannot login with wrong credentials', function () {
-    $user = User::factory()->create([
+it(description: 'cannot login with wrong credentials', closure: function (): void {
+    $user = User::factory()->create(attributes: [
         'email' => 'fail@example.com',
-        'password' => bcrypt('correctpass'),
+        'password' => bcrypt(value: 'correctpass'),
     ]);
 
     $response = $this->postJson('/api/login', [
@@ -51,5 +53,6 @@ it('cannot login with wrong credentials', function () {
     ]);
 
     $response->assertStatus(401)
-        ->assertJson(['error' => 'Unauthorized']);
+        ->assertJson(['error' => 'Unauthorized'])
+    ;
 });

@@ -11,7 +11,16 @@ class ProductData
         public readonly ?float $weight,
         public readonly ?string $category,
     ) {}
-
+    /**
+     * @param array{
+     *     name: string,
+     *     description?: string,
+     *     price: float,
+     *     weight?: float,
+     *     category?: string
+     *
+     * } $data
+     */
     public static function fromArray(array $data): self
     {
         return new self(
@@ -22,7 +31,15 @@ class ProductData
             category: $data['category'] ?? null,
         );
     }
-
+    /**
+     * @return array{
+     *      name: string,
+     *      description?: string,
+     *      price: float,
+     *      weight?: float,
+     *      category?: string
+     * }
+     */
     public function toArray(): array
     {
         return [
