@@ -1,10 +1,10 @@
 <?php
 
-namespace Modules\Product\Http\Requests;
+namespace Modules\User\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class UpdateProductRequest extends FormRequest
+class LoginRequest extends FormRequest
 {
     /**
      * Get the validation rules that apply to the request.
@@ -12,11 +12,9 @@ class UpdateProductRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required|string|max:255',
-            'description' => 'nullable|string',
-            'price' => 'required|numeric|min:0',
-            'weight' => 'nullable|numeric|min:0',
-            'category' => 'nullable|string|max:255',
+            'email' => 'required|email|exists:users,email',
+            'password' => 'required|string|min:6',
+
         ];
     }
 
