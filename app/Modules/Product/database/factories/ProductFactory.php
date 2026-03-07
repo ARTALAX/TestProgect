@@ -4,10 +4,10 @@ namespace Modules\Product\Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Modules\Product\Models\Product;
+
 /**
  * @extends Factory<Product>
  */
-
 class ProductFactory extends Factory
 {
     /**

@@ -31,10 +31,10 @@ jobs:
         run: |
           docker exec app_php bash -c "
             composer install --prefer-dist --no-progress --no-interaction &&
-            ./vendor/bin/phpunit &&
+            php artisan test &&
             ./vendor/bin/php-cs-fixer fix --dry-run --diff &&
-            ./vendor/bin/phpstan analyse -l max Modules &&
-            ./vendor/bin/rector process Modules --dry-run
+            ./vendor/bin/phpstan analyse &&
+            ./vendor/bin/rector Modules --dry-run
           "
 
       - name: Tear down

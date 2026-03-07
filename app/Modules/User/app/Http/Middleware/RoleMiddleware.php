@@ -2,9 +2,7 @@
 
 namespace Modules\User\Http\Middleware;
 
-use Closure;
 use Illuminate\Http\Request;
-use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Http\Response;
 
 class RoleMiddleware
@@ -12,12 +10,12 @@ class RoleMiddleware
     /**
      * Handle an incoming request.
      *
-     * @param Request $request
-     * @param Closure $next
-     * @param  string|string[] ...$roles
-     * @return Response|mixed
+     * @param Request         $request
+     * @param string|string[] ...$roles
+     *
+     * @return mixed|Response
      */
-    public function handle($request, Closure $next, ...$roles)
+    public function handle($request, \Closure $next, ...$roles)
     {
         $user = $request->user();
         if (!$user || !in_array(needle: $user->role, haystack: $roles, strict: true)) {

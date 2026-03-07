@@ -11,6 +11,7 @@ class ProductData
         public readonly ?float $weight,
         public readonly ?string $category,
     ) {}
+
     /**
      * @param array{
      *     name: string,
@@ -31,6 +32,7 @@ class ProductData
             category: $data['category'] ?? null,
         );
     }
+
     /**
      * @return array{
      *      name: string,
