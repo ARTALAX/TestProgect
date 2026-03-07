@@ -19,7 +19,8 @@ class ProductController extends Controller
     public function index(): AnonymousResourceCollection
     {
         $products = $this->service->paginate();
-        return ProductResource::collection($products);
+
+        return ProductResource::collection(resource: $products);
     }
 
     public function show(Product $product): ProductResource
@@ -29,22 +30,24 @@ class ProductController extends Controller
 
     public function store(CreateProductRequest $request): ProductResource
     {
-        $dto = ProductData::fromArray($request->validated());
-        $product = $this->service->create($dto);
+        $dto = ProductData::fromArray(data: $request->validated());
+        $product = $this->service->create(dto: $dto);
 
         return ProductResource::make($product);
     }
 
     public function update(UpdateProductRequest $request, Product $product): ProductResource
     {
-        $dto = ProductData::fromArray($request->validated());
-        $updated = $this->service->update($product, $dto);
+        $dto = ProductData::fromArray(data: $request->validated());
+        $updated = $this->service->update(product: $product, dto: $dto);
+
         return ProductResource::make($updated);
     }
 
     public function destroy(Product $product): Response
     {
-        $this->service->delete($product);
+        $this->service->delete(product: $product);
+
         return response()->noContent();
     }
 }

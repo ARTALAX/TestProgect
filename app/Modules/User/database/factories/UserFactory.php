@@ -4,7 +4,9 @@ namespace Modules\User\Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Modules\User\Models\User;
-
+/**
+ * @extends Factory<User>
+ */
 class UserFactory extends Factory
 {
     /**
@@ -20,10 +22,8 @@ class UserFactory extends Factory
         return [
             'name' => $this->faker->name(),
             'email' => $this->faker->unique()->safeEmail(),
-            'role'=>$this->faker->randomElement(["guest","user","admin"]),
-            'password' => bcrypt('password'),
+            'role' => $this->faker->randomElement(['guest', 'user', 'admin']),
+            'password' => bcrypt(value: 'password'),
         ];
-
     }
 }
-

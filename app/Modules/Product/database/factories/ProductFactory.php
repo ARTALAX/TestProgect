@@ -4,6 +4,9 @@ namespace Modules\Product\Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Modules\Product\Models\Product;
+/**
+ * @extends Factory<Product>
+ */
 
 class ProductFactory extends Factory
 {
@@ -20,10 +23,9 @@ class ProductFactory extends Factory
         return [
             'name' => $this->faker->name(),
             'description' => $this->faker->text(),
-            'price' => $this->faker->randomFloat(2, 10, 1000),
-            'weight' => $this->faker->randomFloat(2, 0.1, 10),
+            'price' => $this->faker->randomFloat(nbMaxDecimals: 2, min: 10, max: 1000),
+            'weight' => $this->faker->randomFloat(nbMaxDecimals: 2, min: 0.1, max: 10),
             'category' => $this->faker->word(),
         ];
     }
 }
-
