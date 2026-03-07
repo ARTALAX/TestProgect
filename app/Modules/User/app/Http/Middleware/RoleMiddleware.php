@@ -3,17 +3,24 @@
 namespace Modules\User\Http\Middleware;
 
 use Closure;
+use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Http\Response;
 
 class RoleMiddleware
 {
     /**
      * Handle an incoming request.
+     *
+     * @param Request $request
+     * @param Closure $next
+     * @param  string|string[] ...$roles
+     * @return Response|mixed
      */
     public function handle($request, Closure $next, ...$roles)
     {
         $user = $request->user();
-        if (!$user || !in_array($user->role, $roles, true)) {
+        if (!$user || !in_array(needle: $user->role, haystack: $roles, strict: true)) {
             return response()->json(['error' => 'Forbidden'], Response::HTTP_FORBIDDEN);
         }
 

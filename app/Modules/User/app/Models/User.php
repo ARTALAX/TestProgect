@@ -2,24 +2,29 @@
 
 namespace Modules\User\Models;
 
-use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\DatabaseNotification;
+use Illuminate\Notifications\DatabaseNotificationCollection;
+use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Carbon;
 use Modules\User\Database\Factories\UserFactory;
 use Tymon\JWTAuth\Contracts\JWTSubject;
-use Illuminate\Notifications\Notifiable;
+
 // use Modules\User\Database\Factories\UserFactory;
 
 /**
- * @property int $id
- * @property string $name
- * @property string $email
- * @property string $role
- * @property string $password
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \Illuminate\Notifications\DatabaseNotificationCollection<int, \Illuminate\Notifications\DatabaseNotification> $notifications
- * @property-read int|null $notifications_count
- * @method static \Modules\User\Database\Factories\UserFactory factory($count = null, $state = [])
+ * @property int                                                       $id
+ * @property string                                                    $name
+ * @property string                                                    $email
+ * @property string                                                    $role
+ * @property string                                                    $password
+ * @property null|Carbon                                               $created_at
+ * @property null|Carbon                                               $updated_at
+ * @property DatabaseNotificationCollection<int, DatabaseNotification> $notifications
+ * @property null|int                                                  $notifications_count
+ *
+ * @method static \Modules\User\Database\Factories\UserFactory       factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User query()
@@ -30,12 +35,17 @@ use Illuminate\Notifications\Notifiable;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User wherePassword($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereRole($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereUpdatedAt($value)
+ *
  * @mixin \Eloquent
  */
 class User extends Authenticatable implements JWTSubject
 {
+    /**
+     * @use HasFactory<\Modules\User\Database\Factories\UserFactory>
+     */
     use HasFactory;
     use Notifiable;
+
     /**
      * The attributes that are mass assignable.
      */
@@ -44,24 +54,25 @@ class User extends Authenticatable implements JWTSubject
         'email',
         'role',
         'password',
-
     ];
     protected $hidden = [
-        'password'
+        'password',
     ];
-
-    protected static function newFactory(): UserFactory
-    {
-        return UserFactory::new();
-    }
 
     public function getJWTIdentifier()
     {
         return $this->getKey();
     }
-
-    public function getJWTCustomClaims()
+    /**
+     * @return array<string, mixed>
+     */
+    public function getJWTCustomClaims(): array
     {
         return [];
+    }
+
+    protected static function newFactory(): UserFactory
+    {
+        return UserFactory::new();
     }
 }

@@ -4,13 +4,13 @@ namespace Modules\User\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Hash;
 use Modules\User\Http\Requests\LoginRequest;
 use Modules\User\Http\Requests\RegisterRequest;
 use Modules\User\Models\User;
 use Tymon\JWTAuth\Facades\JWTAuth;
-use Illuminate\Http\Response;
+
 class AuthController extends Controller
 {
     /**
@@ -34,10 +34,11 @@ class AuthController extends Controller
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'role' => 'user'
+            'role' => 'user',
         ]);
 
         $token = JWTAuth::fromUser($user);
+
         return response()->json(['token' => $token]);
     }
 }

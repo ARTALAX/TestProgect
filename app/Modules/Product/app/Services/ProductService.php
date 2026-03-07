@@ -2,9 +2,9 @@
 
 namespace Modules\Product\Services;
 
+use Illuminate\Pagination\LengthAwarePaginator;
 use Modules\Product\DTO\ProductData;
 use Modules\Product\Models\Product;
-
 
 class ProductService
 {
@@ -15,7 +15,8 @@ class ProductService
 
     public function update(Product $product, ProductData $dto): Product
     {
-        $product->update($dto->toArray());
+        $product->update(attributes: $dto->toArray());
+
         return $product->refresh();
     }
 
@@ -23,10 +24,11 @@ class ProductService
     {
         $product->delete();
     }
-
-    public function paginate(int $perPage = 15)
+    /**
+     * @return LengthAwarePaginator<int, Product>
+     */
+    public function paginate(int $perPage = 15): LengthAwarePaginator
     {
         return Product::paginate($perPage);
     }
-
 }

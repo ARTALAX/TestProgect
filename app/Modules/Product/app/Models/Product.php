@@ -2,22 +2,24 @@
 
 namespace Modules\Product\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Carbon;
 use Modules\Product\Database\Factories\ProductFactory;
 
 // use Modules\Product\Database\Factories\ProductFactory;
 
 /**
- * @property int $id
- * @property string $name
- * @property string|null $description
- * @property float $price
- * @property float|null $weight
- * @property string|null $category
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @method static \Modules\Product\Database\Factories\ProductFactory factory($count = null, $state = [])
+ * @property int         $id
+ * @property string      $name
+ * @property null|string $description
+ * @property float       $price
+ * @property null|float  $weight
+ * @property null|string $category
+ * @property null|Carbon $created_at
+ * @property null|Carbon $updated_at
+ *
+ * @method static \Modules\Product\Database\Factories\ProductFactory    factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Product newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Product newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Product query()
@@ -29,10 +31,15 @@ use Modules\Product\Database\Factories\ProductFactory;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Product wherePrice($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Product whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Product whereWeight($value)
- * @mixin \Eloquent
+ *
+ * @mixin \Illuminate\Database\Eloquent\Model
+ *
  */
 class Product extends Model
 {
+    /**
+     * @use HasFactory<\Modules\Product\Database\Factories\ProductFactory>
+     */
     use HasFactory;
 
     /**
@@ -43,14 +50,15 @@ class Product extends Model
         'description',
         'price',
         'weight',
-        'category',];
+        'category', ];
 
     protected $casts = [
         'price' => 'float',
         'weight' => 'float',
     ];
-     protected static function newFactory(): ProductFactory
-     {
-          return ProductFactory::new();
-     }
+
+    protected static function newFactory(): ProductFactory
+    {
+        return ProductFactory::new();
+    }
 }
