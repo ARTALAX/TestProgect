@@ -31,7 +31,7 @@ jobs:
         run: |
           docker exec app_php bash -c "
             composer install --prefer-dist --no-progress --no-interaction &&
-            php artisan test &&
+            docker compose exec php php artisan test Modules &&
             ./vendor/bin/php-cs-fixer fix --dry-run --diff &&
             ./vendor/bin/phpstan analyse &&
             ./vendor/bin/rector Modules --dry-run
