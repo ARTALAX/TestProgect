@@ -4,6 +4,7 @@ namespace Modules\User\Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Modules\User\Models\User;
+
 /**
  * @extends Factory<User>
  */

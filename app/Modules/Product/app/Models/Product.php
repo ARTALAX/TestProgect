@@ -33,7 +33,6 @@ use Modules\Product\Database\Factories\ProductFactory;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Product whereWeight($value)
  *
  * @mixin \Illuminate\Database\Eloquent\Model
- *
  */
 class Product extends Model
 {

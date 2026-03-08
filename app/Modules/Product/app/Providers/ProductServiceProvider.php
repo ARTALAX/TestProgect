@@ -140,6 +140,7 @@ class ProductServiceProvider extends ServiceProvider
 
         config(key: [$key => array_replace_recursive($existing, $module_config)]);
     }
+
     /** @return string[] */
     private function getPublishableViewPaths(): array
     {
