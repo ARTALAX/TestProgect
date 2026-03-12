@@ -53,6 +53,7 @@ it(description: 'allows admin user to create a product', closure: function (): v
         'name' => 'Admin Product',
         'description' => 'Admin Desc',
         'price' => 100,
+        'category' => 'pizza',
     ]);
 
     $response->assertStatus(201)

@@ -69,6 +69,7 @@ class UserServiceProvider extends ServiceProvider
 
     /**
      * Get the services provided by the provider.
+     *
      * @return array<string,mixed>
      */
     public function provides(): array
@@ -138,6 +139,7 @@ class UserServiceProvider extends ServiceProvider
 
         config(key: [$key => array_replace_recursive($existing, $module_config)]);
     }
+
     /** @return string[] */
     private function getPublishableViewPaths(): array
     {
