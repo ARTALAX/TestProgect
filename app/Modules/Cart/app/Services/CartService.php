@@ -2,6 +2,7 @@
 
 namespace Modules\Cart\Services;
 
+use Illuminate\Support\Facades\DB;
 use Modules\Cart\Models\Cart;
 use Modules\CartItem\Models\CartItem;
 use Modules\Product\Models\Product;
@@ -19,30 +20,41 @@ class CartService
 
     public function addItem(User $user, int $productId, int $quantity): CartItem
     {
-        $cart = $this->getUserCart(user: $user);
-        $product = Product::findOrFail($productId);
+        return DB::transaction(function () use ($user, $productId, $quantity) {
+            $cart = Cart::where('user_id', $user->id)
+                ->lockForUpdate()
+                ->firstOrCreate(['user_id' => $user->id])
+            ;
 
-        $this->checkLimits(cart: $cart, product: $product, quantity: $quantity);
+            $cart->load('items.product');
 
-        $item = CartItem::firstOrNew([
-            'cart_id' => $cart->id,
-            'product_id' => $product->id,
-        ]);
+            $product = Product::findOrFail($productId);
 
-        $item->quantity = ($item->quantity ?? 0) + $quantity;
-        $item->save();
+            $this->checkLimits(cart: $cart, product: $product, quantity: $quantity);
 
-        return $item;
+            $item = CartItem::where('cart_id', $cart->id)
+                ->where('product_id', $product->id)
+                ->lockForUpdate()
+                ->first()
+            ;
+
+            if (!$item) {
+                $item = new CartItem(attributes: [
+                    'cart_id' => $cart->id,
+                    'product_id' => $product->id,
+                    'quantity' => 0,
+                ]);
+            }
+
+            $item->quantity += $quantity;
+            $item->save();
+
+            return $item;
+        });
     }
 
-    public function updateItem(User $user, int $itemId, int $quantity): CartItem
+    public function updateItem(CartItem $item, int $quantity): CartItem
     {
-        $item = CartItem::findOrFail($itemId);
-
-        if ($item->cart->user_id !== $user->id) {
-            throw new \RuntimeException(message: 'Товар не найден в вашей корзине');
-        }
-
         $product = $item->product;
         $cart = $item->cart;
 
@@ -54,14 +66,8 @@ class CartService
         return $item;
     }
 
-    public function deleteItem(User $user, int $itemId): void
+    public function deleteItem(CartItem $item): void
     {
-        $item = CartItem::findOrFail($itemId);
-
-        if ($item->cart->user_id !== $user->id) {
-            throw new \RuntimeException(message: 'Товар не найден');
-        }
-
         $item->delete();
     }
 

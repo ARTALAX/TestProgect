@@ -15,7 +15,6 @@ return new class extends Migration {
             $table->foreignId(column: 'user_id')->nullable()->constrained()->nullOnDelete();
             $table->foreignId(column: 'address_id')->constrained()->onDelete('cascade');
             $table->string(column: 'status')->default('created'); // created, paid, in_progress, delivering, completed, cancelled
-            //            $table->json('delivery_address'); // {region, city, street, house, entrance, apartment, zip}
             $table->decimal(column: 'total_price')->default(0);
             $table->timestamps();
         });

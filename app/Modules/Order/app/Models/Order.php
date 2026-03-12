@@ -2,6 +2,15 @@
 
 namespace Modules\Order\Models;
 
+enum OrderStatus: string
+{
+    case CREATED = 'created';
+    case PAID = 'paid';
+    case IN_PROGRESS = 'in_progress';
+    case DELIVERING = 'delivering';
+    case COMPLETED = 'completed';
+    case CANCELLED = 'cancelled';
+}
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -46,13 +55,6 @@ class Order extends Model
 {
     use HasFactory;
 
-    public const STATUS_CREATED = 'created';
-    public const STATUS_PAID = 'paid';
-    public const STATUS_IN_PROGRESS = 'in_progress';
-    public const STATUS_DELIVERING = 'delivering';
-    public const STATUS_COMPLETED = 'completed';
-    public const STATUS_CANCELLED = 'cancelled';
-
     /**
      * The attributes that are mass assignable.
      */
@@ -63,16 +65,18 @@ class Order extends Model
         'total_price',
     ];
 
-    public static function getStatuses(): array
+    protected $casts = [
+        'status' => OrderStatus::class,
+    ];
+
+    public function cancel(): void
     {
-        return [
-            self::STATUS_CREATED,
-            self::STATUS_PAID,
-            self::STATUS_IN_PROGRESS,
-            self::STATUS_DELIVERING,
-            self::STATUS_COMPLETED,
-            self::STATUS_CANCELLED,
-        ];
+        if ($this->status === OrderStatus::COMPLETED->value) {
+            throw new \RuntimeException(message: 'Невозможно отменить завершенный заказ');
+        }
+
+        $this->status = OrderStatus::CANCELLED->value;
+        $this->save();
     }
 
     public function items(): HasMany

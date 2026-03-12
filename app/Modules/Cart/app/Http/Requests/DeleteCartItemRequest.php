@@ -2,9 +2,9 @@
 
 namespace Modules\Cart\Http\Requests;
 
-use Illuminate\Foundation\Http\FormRequest;
+use App\Http\Requests\BaseRequest;
 
-class DeleteCartItemRequest extends FormRequest
+class DeleteCartItemRequest extends BaseRequest
 {
     /**
      * Get the validation rules that apply to the request.
@@ -14,13 +14,5 @@ class DeleteCartItemRequest extends FormRequest
         return [
             'cart_item_id' => 'required|exists:cart_items,id',
         ];
-    }
-
-    /**
-     * Determine if the user is authorized to make this request.
-     */
-    public function authorize(): bool
-    {
-        return true;
     }
 }

@@ -3,6 +3,7 @@
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Modules\Cart\Models\Cart;
 use Modules\Order\Models\Order;
+use Modules\Order\Models\OrderStatus;
 use Modules\Product\Models\Product;
 use Modules\User\Models\User;
 use Tests\TestCase;
@@ -65,7 +66,7 @@ it(description: 'creates an order with valid cart', closure: function (): void {
     ]);
 
     $response->assertStatus(201)
-        ->assertJsonFragment(['status' => Order::STATUS_CREATED])
+        ->assertJsonFragment(['status' => OrderStatus::CREATED])
     ;
 
     $this->assertDatabaseHas('orders', ['user_id' => $this->user->id]);
@@ -106,7 +107,5 @@ it(description: 'prevents accessing someone else\'s order', closure: function ()
         'Authorization' => "Bearer {$token}",
     ])->getJson("/api/orders/{$order->id}");
 
-    $response->assertStatus(403)
-        ->assertJsonFragment(['error' => 'Доступ запрещен'])
-    ;
+    $response->assertStatus(403);
 });

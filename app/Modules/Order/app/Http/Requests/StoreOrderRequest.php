@@ -2,15 +2,10 @@
 
 namespace Modules\Order\Http\Requests;
 
-use Illuminate\Foundation\Http\FormRequest;
+use App\Http\Requests\BaseRequest;
 
-class StoreOrderRequest extends FormRequest
+class StoreOrderRequest extends BaseRequest
 {
-    public function authorize(): bool
-    {
-        return true; // или через политику OrderPolicy
-    }
-
     public function rules(): array
     {
         return [

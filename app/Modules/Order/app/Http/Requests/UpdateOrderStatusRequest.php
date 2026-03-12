@@ -2,23 +2,16 @@
 
 namespace Modules\Order\Http\Requests;
 
-use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rule;
-use Modules\Order\Models\Order;
+use App\Http\Requests\BaseRequest;
+use Illuminate\Validation\Rules\Enum;
+use Modules\Order\Models\OrderStatus;
 
-class UpdateOrderStatusRequest extends FormRequest
+class UpdateOrderStatusRequest extends BaseRequest
 {
-    public function authorize(): bool
-    {
-        return true;
-    }
-
     public function rules(): array
     {
         return [
-            'status' => [
-                'required',
-                Rule::in(values: Order::getStatuses()),
+            'status' => ['required', new Enum(type: OrderStatus::class),
             ],
         ];
     }

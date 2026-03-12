@@ -9,6 +9,7 @@ use Modules\Cart\Http\Requests\AddCartItemRequest;
 use Modules\Cart\Http\Requests\DeleteCartItemRequest;
 use Modules\Cart\Http\Requests\UpdateCartItemRequest;
 use Modules\Cart\Services\CartService;
+use Modules\CartItem\Models\CartItem;
 
 class CartController extends Controller
 {
@@ -35,9 +36,12 @@ class CartController extends Controller
 
     public function updateItem(UpdateCartItemRequest $request, CartService $cartService): JsonResponse
     {
+        $item = CartItem::findOrFail($request->cart_item_id);
+
+        $this->authorize(ability: 'update', arguments: $item);
+
         $item = $cartService->updateItem(
-            user: $request->user(),
-            itemId: $request->cart_item_id,
+            item: $item,
             quantity: $request->quantity
         );
 
@@ -46,10 +50,11 @@ class CartController extends Controller
 
     public function deleteItem(DeleteCartItemRequest $request, CartService $cartService): JsonResponse
     {
-        $cartService->deleteItem(
-            user: $request->user(),
-            itemId: $request->cart_item_id
-        );
+        $item = CartItem::findOrFail($request->cart_item_id);
+
+        $this->authorize(ability: 'delete', arguments: $item);
+
+        $cartService->deleteItem(item: $item);
 
         return response()->json(['message' => 'Товар удалён']);
     }

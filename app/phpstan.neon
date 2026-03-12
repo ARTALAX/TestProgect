@@ -21,10 +21,10 @@ parameters:
         - '#Method .* return type with generic class Illuminate\\Database\\Eloquent\\Relations\\.* does not specify its types#'
 
                 # 3. Collection::sum() и подобные методы с неразрешаемыми шаблонными типами
-    #  - '#Unable to resolve the template type TReturnType in call to method Illuminate\\Support\\Collection.*#'
+#        - '#Unable to resolve the template type TReturnType in call to method Illuminate\\Support\\Collection.*#'
 
                 # 4. Iterable без value type в FormRequest rules() или параметрах массивов
-        - '#Method .* return type has no value type specified in iterable type array#'
+#        - '#Method .* return type has no value type specified in iterable type array#'
         - '#Method .* has parameter .* with no value type specified in iterable type array#'
 
                 # Оставляем все реальные ошибки типов аргументов и return type

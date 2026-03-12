@@ -5,6 +5,7 @@ namespace Modules\Order\Database\Factories;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Modules\Address\Models\Address;
 use Modules\Order\Models\Order;
+use Modules\Order\Models\OrderStatus;
 use Modules\User\Models\User;
 
 class OrderFactory extends Factory
@@ -21,7 +22,7 @@ class OrderFactory extends Factory
     {
         return [
             'user_id' => User::inRandomOrder()->first()->id,
-            'status' => $this->faker->randomElement(['created', 'paid', 'in_progress', 'delivering', 'completed', 'cancelled']),
+            'status' => $this->faker->randomElement(OrderStatus::cases()),
             'address_id' => Address::factory(),
             'total_price' => $this->faker->randomFloat(nbMaxDecimals: 2, min: 10, max: 1000),
         ];

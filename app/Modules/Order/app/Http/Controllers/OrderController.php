@@ -13,12 +13,7 @@ use Modules\Order\Services\OrderService;
 
 class OrderController extends Controller
 {
-    protected OrderService $service;
-
-    public function __construct(OrderService $service)
-    {
-        $this->service = $service;
-    }
+    public function __construct(private readonly OrderService $service) {}
 
     public function index(Request $request): JsonResponse
     {
@@ -30,11 +25,9 @@ class OrderController extends Controller
         return response()->json($orders);
     }
 
-    public function show(Request $request, Order $order): JsonResponse
+    public function show(Order $order): JsonResponse
     {
-        if ($order->user_id !== $request->user()->id) {
-            return response()->json(['error' => 'Доступ запрещен'], Response::HTTP_FORBIDDEN);
-        }
+        $this->authorize(ability: 'view', arguments: $order);
 
         return response()->json($order->load('items.product', 'address'));
     }
@@ -45,7 +38,7 @@ class OrderController extends Controller
             $order = $this->service->createOrder(user: $request->user(), addressData: $request->validated());
 
             return response()->json($order, Response::HTTP_CREATED);
-        } catch (\Exception $e) {
+        } catch (\RuntimeException $e) {
             return response()->json(['error' => $e->getMessage()], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
     }
@@ -59,12 +52,10 @@ class OrderController extends Controller
 
     public function cancel(Request $request, Order $order): JsonResponse
     {
-        try {
-            $order = $this->service->cancelOrder(order: $order, user: $request->user());
+        $this->authorize(ability: 'cancel', arguments: $order);
 
-            return response()->json(['message' => 'Заказ отменен']);
-        } catch (\Exception $e) {
-            return response()->json(['error' => $e->getMessage()], Response::HTTP_UNPROCESSABLE_ENTITY);
-        }
+        $this->service->cancelOrder(order: $order, user: $request->user());
+
+        return response()->json(['message' => 'Заказ отменен']);
     }
 }
