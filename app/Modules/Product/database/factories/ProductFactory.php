@@ -25,7 +25,7 @@ class ProductFactory extends Factory
             'description' => $this->faker->text(),
             'price' => $this->faker->randomFloat(nbMaxDecimals: 2, min: 10, max: 1000),
             'weight' => $this->faker->randomFloat(nbMaxDecimals: 2, min: 0.1, max: 10),
-            'category' => $this->faker->word(),
+            'category' => $this->faker->randomElement(['pizza', 'drink']),
         ];
     }
 }

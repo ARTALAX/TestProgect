@@ -14,9 +14,9 @@ return new class extends Migration {
             $table->id();
             $table->string(column: 'name');
             $table->text(column: 'description')->nullable();
-            $table->decimal(column: 'price', total: 10);
+            $table->decimal(column: 'price');
             $table->decimal(column: 'weight')->nullable();
-            $table->string(column: 'category')->nullable();
+            $table->enum(column: 'category', allowed: ['pizza', 'drink']);
             $table->timestamps();
         });
     }

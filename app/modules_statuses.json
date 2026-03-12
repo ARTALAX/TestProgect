@@ -1,4 +1,9 @@
 {
     "Product": true,
-    "User": true
+    "User": true,
+    "Cart": true,
+    "CartItem": true,
+    "Order": true,
+    "OrderItem": true,
+    "Address": true
 }

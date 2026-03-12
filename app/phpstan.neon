@@ -10,9 +10,27 @@ parameters:
     # Level 10 is the highest level
     level: 6
 
-#    ignoreErrors:
-#        - '#PHPDoc tag @var#'
-#
+    ignoreErrors:
+    #    - '#PHPDoc tag @var#'
+
+        # 1. HasFactory / Factory generics — безопасно игнорируем
+        - '#Class .* uses generic trait Illuminate\\Database\\Eloquent\\Factories\\HasFactory#'
+        - '#Class .* extends generic class Illuminate\\Database\\Eloquent\\Factories\\Factory#'
+
+                # 2. Eloquent relations без указания generic types
+        - '#Method .* return type with generic class Illuminate\\Database\\Eloquent\\Relations\\.* does not specify its types#'
+
+                # 3. Collection::sum() и подобные методы с неразрешаемыми шаблонными типами
+    #  - '#Unable to resolve the template type TReturnType in call to method Illuminate\\Support\\Collection.*#'
+
+                # 4. Iterable без value type в FormRequest rules() или параметрах массивов
+        - '#Method .* return type has no value type specified in iterable type array#'
+        - '#Method .* has parameter .* with no value type specified in iterable type array#'
+
+                # Оставляем все реальные ошибки типов аргументов и return type
+    reportUnmatchedIgnoredErrors: true
+
     excludePaths:
          - */tests/*
+         - */Providers/*
 

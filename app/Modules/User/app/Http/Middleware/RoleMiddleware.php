@@ -15,7 +15,7 @@ class RoleMiddleware
      *
      * @return mixed|Response
      */
-    public function handle($request, \Closure $next, ...$roles)
+    public function handle($request, \Closure $next, ...$roles): mixed
     {
         $user = $request->user();
         if (!$user || !in_array(needle: $user->role, haystack: $roles, strict: true)) {
