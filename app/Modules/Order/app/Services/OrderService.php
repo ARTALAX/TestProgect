@@ -14,7 +14,7 @@ class OrderService
     public function createOrder(User $user, array $addressData): Order
     {
         return DB::transaction(function () use ($user, $addressData) {
-            $cart = Cart::where('user_id', $user->id)
+            $cart = Cart::where('id', $user->id)
                 ->with('items.product')
                 ->lockForUpdate()
                 ->first()
@@ -24,22 +24,16 @@ class OrderService
                 throw new \RuntimeException(message: 'В корзине нет товаров');
             }
 
-            $pizzaCount = $cart->items->sum(
-                fn ($item) => 'pizza' === $item->product->category ? $item->quantity : 0
-            );
+            // Теперь создаём заказ в транзакции для безопасности
 
-            $drinkCount = $cart->items->sum(
-                fn ($item) => 'drink' === $item->product->category ? $item->quantity : 0
-            );
+            $pizzaCount = $cart->items->sum(fn ($item) => 'pizza' === $item->product->category ? $item->quantity : 0);
+            $drinkCount = $cart->items->sum(fn ($item) => 'drink' === $item->product->category ? $item->quantity : 0);
 
             if ($pizzaCount > 10 || $drinkCount > 20) {
                 throw new \RuntimeException(message: 'Превышен лимит товаров');
             }
 
-            $address = Address::create([
-                ...$addressData,
-                'user_id' => $user->id,
-            ]);
+            $address = Address::create([...$addressData, 'user_id' => $user->id]);
 
             $order = Order::create([
                 'user_id' => $user->id,
@@ -56,7 +50,10 @@ class OrderService
                 ]);
             }
 
+            // Очищаем корзину
             $cart->items()->delete();
+
+            // Инвалидация кеша
 
             return $order->load('items.product', 'address');
         });
