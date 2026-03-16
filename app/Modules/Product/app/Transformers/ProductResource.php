@@ -5,7 +5,6 @@ namespace Modules\Product\Transformers;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-
 class ProductResource extends JsonResource
 {
     /**
@@ -14,10 +13,10 @@ class ProductResource extends JsonResource
      * @return array{
      *     id: int,
      *     name: string,
-     *     description?: string|null,
+     *     description?: null|string,
      *     price: float,
-     *     weight?: float|null,
-     *     category?: string|null,
+     *     weight?: null|float,
+     *     category?: null|string,
      *     created_at: null|string,
      *     updated_at: null|string
      * }

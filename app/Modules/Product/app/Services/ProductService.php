@@ -24,6 +24,7 @@ class ProductService
     {
         $product->delete();
     }
+
     /**
      * @return LengthAwarePaginator<int, Product>
      */

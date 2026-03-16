@@ -12,6 +12,10 @@ RUN apt-get update && apt-get install -y \
 #RUN docker-php-ext-install pdo pdo_pgsql
 RUN install-php-extensions pdo pdo_pgsql
 
+RUN curl -sS https://getcomposer.org/installer | php \
+    && mv composer.phar /usr/local/bin/composer
+
+
 COPY php.ini /usr/local/etc/php/
 COPY php-fpm.conf /usr/local/etc/php-fpm.d/www.conf
 COPY conf.d/xdebug.ini /usr/local/etc/php/conf.d/

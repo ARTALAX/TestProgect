@@ -15,7 +15,7 @@ use Modules\Product\Database\Factories\ProductFactory;
  * @property null|string $description
  * @property float       $price
  * @property null|float  $weight
- * @property null|string $category
+ * @property string      $category
  * @property null|Carbon $created_at
  * @property null|Carbon $updated_at
  *
@@ -32,8 +32,7 @@ use Modules\Product\Database\Factories\ProductFactory;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Product whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Product whereWeight($value)
  *
- * @mixin \Illuminate\Database\Eloquent\Model
- *
+ * @mixin \Eloquent
  */
 class Product extends Model
 {
