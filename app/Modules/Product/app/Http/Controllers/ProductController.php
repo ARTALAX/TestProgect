@@ -9,8 +9,8 @@ use Modules\Product\DTO\ProductData;
 use Modules\Product\Http\Requests\CreateProductRequest;
 use Modules\Product\Http\Requests\UpdateProductRequest;
 use Modules\Product\Models\Product;
+use Modules\Product\Resources\ProductResource;
 use Modules\Product\Services\ProductService;
-use Modules\Product\Transformers\ProductResource;
 
 class ProductController extends Controller
 {

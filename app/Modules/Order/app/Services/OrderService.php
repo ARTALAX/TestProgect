@@ -5,8 +5,8 @@ namespace Modules\Order\Services;
 use Illuminate\Support\Facades\DB;
 use Modules\Address\Models\Address;
 use Modules\Cart\Models\Cart;
+use Modules\Order\Enums\OrderStatus;
 use Modules\Order\Models\Order;
-use Modules\Order\Models\OrderStatus;
 use Modules\User\Models\User;
 
 class OrderService
@@ -14,7 +14,7 @@ class OrderService
     public function createOrder(User $user, array $addressData): Order
     {
         return DB::transaction(function () use ($user, $addressData) {
-            $cart = Cart::where('id', $user->id)
+            $cart = Cart::where('user_id', $user->id)
                 ->with('items.product')
                 ->lockForUpdate()
                 ->first()
@@ -23,8 +23,6 @@ class OrderService
             if (!$cart || $cart->items->isEmpty()) {
                 throw new \RuntimeException(message: 'В корзине нет товаров');
             }
-
-            // Теперь создаём заказ в транзакции для безопасности
 
             $pizzaCount = $cart->items->sum(fn ($item) => 'pizza' === $item->product->category ? $item->quantity : 0);
             $drinkCount = $cart->items->sum(fn ($item) => 'drink' === $item->product->category ? $item->quantity : 0);
@@ -50,10 +48,7 @@ class OrderService
                 ]);
             }
 
-            // Очищаем корзину
             $cart->items()->delete();
-
-            // Инвалидация кеша
 
             return $order->load('items.product', 'address');
         });

@@ -2,8 +2,8 @@
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Modules\Cart\Models\Cart;
+use Modules\Order\Enums\OrderStatus;
 use Modules\Order\Models\Order;
-use Modules\Order\Models\OrderStatus;
 use Modules\Product\Models\Product;
 use Modules\User\Models\User;
 use Tests\TestCase;

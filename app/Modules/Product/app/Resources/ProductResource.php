@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\Product\Transformers;
+namespace Modules\Product\Resources;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -16,7 +16,7 @@ class ProductResource extends JsonResource
      *     description?: null|string,
      *     price: float,
      *     weight?: null|float,
-     *     category?: null|string,
+     *     category: string,
      *     created_at: null|string,
      *     updated_at: null|string
      * }

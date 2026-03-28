@@ -3,46 +3,4 @@ services:
     build:
       context: docker
       dockerfile: docker/php/Dockerfile
-      target: prod    # используем прод-стейдж из multistage Dockerfile
-    container_name: app_php_prod
-    environment:
-      APP_ENV: production
-    volumes: []       # код уже внутри образа, монтировать не нужно
-    networks:
-      - app
-    depends_on:
-      pgsql:
-        condition: service_healthy
-
-  nginx:
-    image: nginx:1.26-alpine
-    container_name: app_nginx_prod
-    ports:
-      - "${NGINX_PORT:-80}:80"
-    volumes:
-      - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf  # конфиги nginx
-    depends_on:
-      - php
-    networks:
-      - app
-
-  pgsql:
-    image: postgres:16.2-alpine
-    container_name: app_pgsql_prod
-    env_file:
-      app/.env  # инфраструктурные переменные
-    volumes:
-      - pgdata_prod:/var/lib/postgresql/data  # отдельный prod volume
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER}"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-    networks:
-      - app
-
-networks:
-  app:
-
-volumes:
-  pgdata_prod:
+      target: prod

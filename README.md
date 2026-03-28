@@ -7,13 +7,11 @@
 ## Setup
 
 1. Clone repository
-2. Copy environment file:
-   cp .env.example .env
 
-3. Start project:
+2. Start project:
    make up
 
-4. Open in browser:
+3. Open in browser:
    http://localhost:${NGINX_PORT}
 
 ## Useful commands
