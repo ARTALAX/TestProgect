@@ -5,5 +5,7 @@
     "CartItem": true,
     "Order": true,
     "OrderItem": true,
-    "Address": true
+    "Address": true,
+    "Reports": true,
+    "Report": true
 }

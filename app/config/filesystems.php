@@ -57,6 +57,17 @@ return [
             'throw' => false,
             'report' => false,
         ],
+        'minio' => [
+            'driver' => 's3',
+            'endpoint' => env('MINIO_ENDPOINT'),
+            'use_path_style_endpoint' => true,
+            'key' => env('MINIO_ACCESS_KEY'),
+            'secret' => env('MINIO_SECRET_KEY'),
+            'region' => env('MINIO_REGION', 'us-east-1'),
+            'bucket' => env('MINIO_BUCKET'),
+            'port' => env('MINIO_PORT', 9000),
+            'port_ui'=>env('MINIO_UI_PORT',9001),
+        ],
     ],
 
     /*
