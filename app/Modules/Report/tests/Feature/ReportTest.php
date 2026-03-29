@@ -1,9 +1,11 @@
 <?php
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Queue;
 use Illuminate\Support\Facades\Storage;
 use Modules\Order\Models\Order;
+use Modules\Report\Events\ReportCompleted;
 use Modules\Report\Jobs\GenerateReportJob;
 use Modules\Report\Models\Report;
 use Modules\Report\Services\ReportGeneratorService;
@@ -18,7 +20,7 @@ beforeEach(closure: function (): void {
 
     // Fake Queue
     Queue::fake();
-
+    Event::fake();
     // Создаём тестового пользователя
     $this->user = User::factory()->create();
 
@@ -83,11 +85,15 @@ it(description: 'GenerateReportJob creates file and updates report', closure: fu
 
     $job = new GenerateReportJob(reportId: $report->id, periodStart: now()->startOfDay(), periodEnd: now()->endOfDay());
     $job->handle(generator: $generator);
-    Queue::assertNothingPushed();
     $report->refresh();
 
     // Проверяем, что статус обновился
     expect(value: $report->status)->toBe('completed')
         ->and(Storage::disk('minio')->exists($report->file_path))->toBeTrue()
     ;
+
+    // Проверяем, что файл создан
+
+    // Проверяем, что событие было вызвано
+    Event::assertDispatched(ReportCompleted::class, fn ($e) => $e->report->id === $report->id);
 });

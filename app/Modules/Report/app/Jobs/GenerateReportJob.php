@@ -8,6 +8,7 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Carbon;
+use Modules\Report\Events\ReportCompleted;
 use Modules\Report\Models\Report;
 use Modules\Report\Services\ReportGeneratorService;
 use PhpAmqpLib\Connection\AMQPStreamConnection;
@@ -56,22 +57,23 @@ class GenerateReportJob implements ShouldQueue
         ]);
 
         // 4. Публикуем событие в RabbitMQ
-        $connection = new AMQPStreamConnection(
-            host: config(key: 'queue.connections.rabbitmq.hosts.0.host'),
-            port: config(key: 'queue.connections.rabbitmq.hosts.0.port'),
-            user: config(key: 'queue.connections.rabbitmq.hosts.0.user'),
-            password: config(key: 'queue.connections.rabbitmq.hosts.0.password'),
-            vhost: config(key: 'queue.connections.rabbitmq.hosts.0.vhost')
-        );
-
-        $channel = $connection->channel();
-        $msg = new AMQPMessage(body: json_encode(value: [
-            'report_id' => $report->id,
-            'file' => $filename,
-            'status' => 'completed',
-        ], flags: JSON_THROW_ON_ERROR));
-        $channel->basic_publish(msg: $msg, exchange: 'reports', routing_key: 'reports.completed');
-        $channel->close();
-        $connection->close();
+        //        $connection = new AMQPStreamConnection(
+        //            host: config(key: 'queue.connections.rabbitmq.hosts.0.host'),
+        //            port: config(key: 'queue.connections.rabbitmq.hosts.0.port'),
+        //            user: config(key: 'queue.connections.rabbitmq.hosts.0.user'),
+        //            password: config(key: 'queue.connections.rabbitmq.hosts.0.password'),
+        //            vhost: config(key: 'queue.connections.rabbitmq.hosts.0.vhost')
+        //        );
+        //
+        //        $channel = $connection->channel();
+        //        $msg = new AMQPMessage(body: json_encode(value: [
+        //            'report_id' => $report->id,
+        //            'file' => $filename,
+        //            'status' => 'completed',
+        //        ], flags: JSON_THROW_ON_ERROR));
+        //        $channel->basic_publish(msg: $msg, exchange: 'reports', routing_key: 'reports.completed');
+        //        $channel->close();
+        //        $connection->close();
+        event(new ReportCompleted(report: $report));
     }
 }
