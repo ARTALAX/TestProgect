@@ -83,7 +83,7 @@ it(description: 'GenerateReportJob creates file and updates report', closure: fu
 
     $job = new GenerateReportJob(reportId: $report->id, periodStart: now()->startOfDay(), periodEnd: now()->endOfDay());
     $job->handle(generator: $generator);
-
+    Queue::assertNothingPushed();
     $report->refresh();
 
     // Проверяем, что статус обновился
