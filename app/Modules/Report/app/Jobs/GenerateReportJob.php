@@ -8,11 +8,10 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Carbon;
+use Modules\Report\Enums\StatusReportEnum;
 use Modules\Report\Events\ReportCompleted;
 use Modules\Report\Models\Report;
 use Modules\Report\Services\ReportGeneratorService;
-use PhpAmqpLib\Connection\AMQPStreamConnection;
-use PhpAmqpLib\Message\AMQPMessage;
 
 class GenerateReportJob implements ShouldQueue
 {
@@ -21,19 +20,7 @@ class GenerateReportJob implements ShouldQueue
     use Queueable;
     use SerializesModels;
 
-    /**
-     * Create a new job instance.
-     */
-    protected Carbon $periodStart;
-    protected int $reportId;
-    protected Carbon $periodEnd;
-
-    public function __construct(int $reportId, Carbon $periodStart, Carbon $periodEnd)
-    {
-        $this->reportId = $reportId;
-        $this->periodStart = $periodStart;
-        $this->periodEnd = $periodEnd;
-    }
+    public function __construct(protected int $reportId, protected Carbon $periodStart, protected Carbon $periodEnd) {}
 
     /**
      * Execute the job.
@@ -52,28 +39,10 @@ class GenerateReportJob implements ShouldQueue
         $report = Report::query()->findOrFail($this->reportId);
 
         $report->update(attributes: [
-            'status' => 'completed',
+            'status' => StatusReportEnum::COMPLETED,
             'file_path' => $filename,
         ]);
 
-        // 4. Публикуем событие в RabbitMQ
-        //        $connection = new AMQPStreamConnection(
-        //            host: config(key: 'queue.connections.rabbitmq.hosts.0.host'),
-        //            port: config(key: 'queue.connections.rabbitmq.hosts.0.port'),
-        //            user: config(key: 'queue.connections.rabbitmq.hosts.0.user'),
-        //            password: config(key: 'queue.connections.rabbitmq.hosts.0.password'),
-        //            vhost: config(key: 'queue.connections.rabbitmq.hosts.0.vhost')
-        //        );
-        //
-        //        $channel = $connection->channel();
-        //        $msg = new AMQPMessage(body: json_encode(value: [
-        //            'report_id' => $report->id,
-        //            'file' => $filename,
-        //            'status' => 'completed',
-        //        ], flags: JSON_THROW_ON_ERROR));
-        //        $channel->basic_publish(msg: $msg, exchange: 'reports', routing_key: 'reports.completed');
-        //        $channel->close();
-        //        $connection->close();
         event(new ReportCompleted(report: $report));
     }
 }

@@ -4,21 +4,17 @@ namespace Modules\Report\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
-use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Storage;
+use Modules\Report\Http\Requests\StoreReportRequest;
 use Modules\Report\Models\Report;
 use Modules\Report\Services\ReportService;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class ReportController extends Controller
 {
-    public function store(Request $request, ReportService $service): JsonResponse
+    public function store(StoreReportRequest $request, ReportService $service): JsonResponse
     {
-        $periodStart = Carbon::parse(time: $request->input(key: 'start', default: now()->startOfDay()));
-        $periodEnd = Carbon::parse(time: $request->input(key: 'end', default: now()->endOfDay()));
-
-        $report = $service->createAndDispatch(periodStart: $periodStart, periodEnd: $periodEnd);
+        $report = $service->createAndDispatch(periodStart: $request->getPeriodStart(), periodEnd: $request->getPeriodEnd());
 
         return response()->json(['message' => 'Job dispatched', 'report_id' => $report->id]);
     }

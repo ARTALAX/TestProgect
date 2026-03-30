@@ -3,6 +3,7 @@
 namespace Modules\Report\Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Modules\Report\Enums\StatusReportEnum;
 use Modules\Report\Models\Report;
 
 class ReportFactory extends Factory
@@ -15,7 +16,7 @@ class ReportFactory extends Factory
     public function definition(): array
     {
         return [
-            'status' => $this->faker->randomElement(['pending', 'completed', 'failed']),
+            'status' => $this->faker->randomElement([StatusReportEnum::PENDING, StatusReportEnum::COMPLETED, StatusReportEnum::FAILED]),
             'file_path' => null, // пустой по умолчанию, заполняется после генерации
             'created_at' => now(),
             'updated_at' => now(),
@@ -27,9 +28,9 @@ class ReportFactory extends Factory
      */
     public function completed(?string $filePath = null): self
     {
-        return $this->state(state: function (array $attributes) use ($filePath) {
+        return $this->state(state: function () use ($filePath) {
             return [
-                'status' => 'completed',
+                'status' => StatusReportEnum::COMPLETED,
                 'file_path' => $filePath ?? "reports/report_{$this->faker->unique()->numberBetween(int1: 1, int2: 1000)}.jsonl",
             ];
         });

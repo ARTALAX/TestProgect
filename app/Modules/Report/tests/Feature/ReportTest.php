@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Queue;
 use Illuminate\Support\Facades\Storage;
 use Modules\Order\Models\Order;
+use Modules\Report\Enums\StatusReportEnum;
 use Modules\Report\Events\ReportCompleted;
 use Modules\Report\Jobs\GenerateReportJob;
 use Modules\Report\Models\Report;
@@ -49,7 +50,7 @@ it(description: 'can create report via API and dispatch job', closure: function 
 
 it(description: 'can show report status', closure: function (): void {
     $report = Report::factory()->create(attributes: [
-        'status' => 'pending',
+        'status' => StatusReportEnum::PENDING->value,
     ]);
 
     $response = $this->getJson("/api/reports/{$report->id}");
@@ -57,7 +58,7 @@ it(description: 'can show report status', closure: function (): void {
     $response->assertStatus(200)
         ->assertJson([
             'id' => $report->id,
-            'status' => 'pending',
+            'status' => StatusReportEnum::PENDING->value,
         ])
     ;
 });
@@ -65,7 +66,7 @@ it(description: 'can show report status', closure: function (): void {
 it(description: 'can download completed report file', closure: function (): void {
     // Создаём report с файлом
     $report = Report::factory()->create(attributes: [
-        'status' => 'completed',
+        'status' => StatusReportEnum::COMPLETED->value,
         'file_path' => 'reports/report_1.jsonl',
     ]);
 
@@ -78,7 +79,7 @@ it(description: 'can download completed report file', closure: function (): void
 });
 
 it(description: 'GenerateReportJob creates file and updates report', closure: function (): void {
-    $report = Report::factory()->create(attributes: ['status' => 'pending']);
+    $report = Report::factory()->create(attributes: ['status' => StatusReportEnum::PENDING->value]);
 
     // Создаём генератор вручную
     $generator = new ReportGeneratorService();
@@ -88,7 +89,7 @@ it(description: 'GenerateReportJob creates file and updates report', closure: fu
     $report->refresh();
 
     // Проверяем, что статус обновился
-    expect(value: $report->status)->toBe('completed')
+    expect(value: $report->status)->toBe(StatusReportEnum::COMPLETED->value)
         ->and(Storage::disk('minio')->exists($report->file_path))->toBeTrue()
     ;
 

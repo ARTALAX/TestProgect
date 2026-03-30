@@ -2,6 +2,7 @@
 
 namespace Modules\Report\Listeners;
 
+use Modules\Report\Enums\StatusReportEnum;
 use Modules\Report\Events\ReportCompleted;
 use PhpAmqpLib\Connection\AMQPStreamConnection;
 use PhpAmqpLib\Message\AMQPMessage;
@@ -35,7 +36,7 @@ class PublishReportCompleted
         $msg = new AMQPMessage(body: json_encode(value: [
             'report_id' => $report->id,
             'file' => $report->file_path,
-            'status' => 'completed',
+            'status' => StatusReportEnum::COMPLETED,
         ], flags: JSON_THROW_ON_ERROR));
         $channel->basic_publish(msg: $msg, exchange: 'reports', routing_key: 'reports.completed');
         $channel->close();

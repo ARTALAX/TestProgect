@@ -88,8 +88,8 @@ return [
             'exchange_declare' => true,
             'queue_declare_bind' => true,
             'exchange_type' => 'direct',
-            'exchange' => 'reports',          // <- обязательно укажи
-            'exchange_routing_key' => 'reports.generate', // <- и routing key
+            'exchange' => 'reports',
+            'exchange_routing_key' => 'reports.generate',
             // ...
         ],
 

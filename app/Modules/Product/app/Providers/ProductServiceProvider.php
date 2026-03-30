@@ -4,6 +4,8 @@ namespace Modules\Product\Providers;
 
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
+use Modules\Product\Models\Product;
+use Modules\Product\Observers\ProductObserver;
 use Nwidart\Modules\Traits\PathNamespace;
 
 class ProductServiceProvider extends ServiceProvider
@@ -25,6 +27,7 @@ class ProductServiceProvider extends ServiceProvider
         $this->registerConfig();
         $this->registerViews();
         $this->loadMigrationsFrom(paths: module_path(name: $this->name, path: 'database/migrations'));
+        Product::observe(classes: ProductObserver::class);
     }
 
     /**
