@@ -16,7 +16,7 @@ class ReportFactory extends Factory
     public function definition(): array
     {
         return [
-            'status' => $this->faker->randomElement([StatusReportEnum::PENDING, StatusReportEnum::COMPLETED, StatusReportEnum::FAILED]),
+            'status' => $this->faker->randomElement([StatusReportEnum::cases()]),
             'file_path' => null, // пустой по умолчанию, заполняется после генерации
             'created_at' => now(),
             'updated_at' => now(),
