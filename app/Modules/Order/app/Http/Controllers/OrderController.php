@@ -56,6 +56,8 @@ class OrderController extends Controller
 
         $this->service->cancelOrder(order: $order, user: $request->user());
 
-        return response()->json(['message' => 'Заказ отменен']);
+        return response()->json([
+            'message' => __(key: 'order::orders.canceled'),
+        ]);
     }
 }
