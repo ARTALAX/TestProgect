@@ -10,7 +10,7 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 #RUN docker-php-ext-install pdo pdo_pgsql
-RUN install-php-extensions pdo pdo_pgsql igbinary redis
+RUN install-php-extensions pdo pdo_pgsql igbinary redis sockets
 
 RUN curl -sS https://getcomposer.org/installer | php \
     && mv composer.phar /usr/local/bin/composer

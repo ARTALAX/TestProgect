@@ -1,20 +1,18 @@
 <?php
 
-namespace Modules\Product\Providers;
+namespace Modules\Report\Providers;
 
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
-use Modules\Product\Models\Product;
-use Modules\Product\Observers\ProductObserver;
 use Nwidart\Modules\Traits\PathNamespace;
 
-class ProductServiceProvider extends ServiceProvider
+class ReportServiceProvider extends ServiceProvider
 {
     use PathNamespace;
 
-    protected string $name = 'Product';
+    protected string $name = 'Report';
 
-    protected string $nameLower = 'product';
+    protected string $nameLower = 'report';
 
     /**
      * Boot the application events.
@@ -27,7 +25,6 @@ class ProductServiceProvider extends ServiceProvider
         $this->registerConfig();
         $this->registerViews();
         $this->loadMigrationsFrom(paths: module_path(name: $this->name, path: 'database/migrations'));
-        Product::observe(classes: ProductObserver::class);
     }
 
     /**
@@ -72,9 +69,6 @@ class ProductServiceProvider extends ServiceProvider
 
     /**
      * Get the services provided by the provider.
-     */
-    /**
-     * @return array<int, string>
      */
     public function provides(): array
     {
@@ -144,7 +138,6 @@ class ProductServiceProvider extends ServiceProvider
         config(key: [$key => array_replace_recursive($existing, $module_config)]);
     }
 
-    /** @return string[] */
     private function getPublishableViewPaths(): array
     {
         $paths = [];
