@@ -2,9 +2,9 @@
 
 namespace Modules\Product\Http\Requests;
 
-use Illuminate\Foundation\Http\FormRequest;
+use App\Http\Requests\BaseRequest;
 
-class CreateProductRequest extends FormRequest
+class CreateProductRequest extends BaseRequest
 {
     /**
      * Get the validation rules that apply to the request.
@@ -18,15 +18,9 @@ class CreateProductRequest extends FormRequest
             'description' => 'nullable|string',
             'price' => 'required|numeric|min:0',
             'weight' => 'nullable|numeric|min:0',
-            'category' => 'nullable|string|max:255',
+            'category' => 'string|max:255',
         ];
     }
 
-    /**
-     * Determine if the user is authorized to make this request.
-     */
-    public function authorize(): bool
-    {
-        return true;
-    }
+    // Determine if the user is authorized to make this request.
 }

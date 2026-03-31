@@ -12,7 +12,8 @@ class ProductService
     public function create(ProductData $dto): Product
     {
         $product = Product::create($dto->toArray());
-        Cache::forget('products_list');
+
+        Cache::tags('products')->flush();
 
         return $product;
     }
@@ -21,7 +22,7 @@ class ProductService
     {
         $product->update(attributes: $dto->toArray());
 
-        Cache::forget('products_list');
+        Cache::tags('products')->flush();
 
         return $product->refresh();
     }
@@ -30,7 +31,7 @@ class ProductService
     {
         $product->delete();
 
-        Cache::forget('products_list');
+        Cache::tags('products')->flush();
     }
 
     /**
@@ -38,7 +39,10 @@ class ProductService
      */
     public function paginate(int $perPage = 15): LengthAwarePaginator
     {
-        return Cache::remember('products_list', 3600, function () use ($perPage) {
+        $page = request(key: 'page', default: 1);
+        $cacheKey = "products_list_page_{$page}_per_{$perPage}";
+
+        return Cache::tags(['products'])->remember(key: $cacheKey, ttl: 3600, callback: function () use ($perPage) {
             return Product::paginate($perPage);
         });
     }

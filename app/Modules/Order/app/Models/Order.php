@@ -2,15 +2,6 @@
 
 namespace Modules\Order\Models;
 
-enum OrderStatus: string
-{
-    case CREATED = 'created';
-    case PAID = 'paid';
-    case IN_PROGRESS = 'in_progress';
-    case DELIVERING = 'delivering';
-    case COMPLETED = 'completed';
-    case CANCELLED = 'cancelled';
-}
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -19,6 +10,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Carbon;
 use Modules\Address\Models\Address;
 use Modules\Order\Database\Factories\OrderFactory;
+use Modules\Order\Enums\OrderStatus;
 use Modules\OrderItem\Models\OrderItem;
 use Modules\User\Models\User;
 

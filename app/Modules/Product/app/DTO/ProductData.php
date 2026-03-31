@@ -9,7 +9,7 @@ class ProductData
         public readonly ?string $description,
         public readonly float $price,
         public readonly ?float $weight,
-        public readonly ?string $category,
+        public readonly string $category,
     ) {}
 
     /**
@@ -18,7 +18,7 @@ class ProductData
      *     description?: string,
      *     price: float,
      *     weight?: float,
-     *     category?: string
+     *     category: string
      *
      * } $data
      */
@@ -29,7 +29,7 @@ class ProductData
             description: $data['description'] ?? null,
             price: (float) $data['price'],
             weight: isset($data['weight']) ? (float) $data['weight'] : null,
-            category: $data['category'] ?? null,
+            category: $data['category'],
         );
     }
 
@@ -39,7 +39,7 @@ class ProductData
      *      description?: string,
      *      price: float,
      *      weight?: float,
-     *      category?: string
+     *      category: string
      * }
      */
     public function toArray(): array

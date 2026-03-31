@@ -5,6 +5,7 @@ namespace Modules\Cart\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Modules\Cart\Http\Requests\AddCartItemRequest;
 use Modules\Cart\Http\Requests\DeleteCartItemRequest;
 use Modules\Cart\Http\Requests\UpdateCartItemRequest;
@@ -56,6 +57,6 @@ class CartController extends Controller
 
         $cartService->deleteItem(item: $item);
 
-        return response()->json(['message' => 'Товар удалён']);
+        return response()->json(['message' => 'Товар удалён'], Response::HTTP_NO_CONTENT);
     }
 }

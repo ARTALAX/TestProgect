@@ -2,7 +2,6 @@
 
 namespace Modules\Cart\Services;
 
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Modules\Cart\Models\Cart;
 use Modules\CartItem\Models\CartItem;
@@ -13,12 +12,10 @@ class CartService
 {
     public function getUserCart(User $user): Cart
     {
-        return Cache::remember("cart:{$user->id}", 3600, function () use ($user) {
-            $cart = Cart::firstOrCreate(['user_id' => $user->id]);
-            $cart->load('items.product');
+        $cart = Cart::firstOrCreate(['user_id' => $user->id]);
+        $cart->load('items.product');
 
-            return $cart;
-        });
+        return $cart;
     }
 
     public function addItem(User $user, int $productId, int $quantity): CartItem
@@ -42,7 +39,7 @@ class CartService
             ;
 
             if (!$item) {
-                $item = new CartItem(attributes: [
+                $item = CartItem::create(attributes: [
                     'cart_id' => $cart->id,
                     'product_id' => $product->id,
                     'quantity' => 0,

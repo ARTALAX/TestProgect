@@ -4,8 +4,8 @@ namespace Modules\Order\Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Modules\Address\Models\Address;
+use Modules\Order\Enums\OrderStatus;
 use Modules\Order\Models\Order;
-use Modules\Order\Models\OrderStatus;
 use Modules\User\Models\User;
 
 class OrderFactory extends Factory
