@@ -51,8 +51,9 @@ it(description: 'cannot login with wrong credentials', closure: function (): voi
         'email' => 'fail@example.com',
         'password' => 'wrongpass',
     ]);
-
     $response->assertStatus(401)
-        ->assertJson(['error' => 'Unauthorized'])
+        ->assertJson([
+            'error' => __(key: 'exceptions.unauthorized'),
+        ])
     ;
 });

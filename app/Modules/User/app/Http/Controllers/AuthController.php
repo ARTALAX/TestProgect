@@ -4,8 +4,9 @@ namespace Modules\User\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Hash;
+use Modules\User\Events\UserRegistered;
+use Modules\User\Exceptions\UserUnauthorizedException;
 use Modules\User\Http\Requests\LoginRequest;
 use Modules\User\Http\Requests\RegisterRequest;
 use Modules\User\Models\User;
@@ -15,6 +16,8 @@ class AuthController extends Controller
 {
     /**
      * Display a listing of the resource.
+     *
+     * @throws UserUnauthorizedException
      */
     public function login(LoginRequest $request): JsonResponse
     {
@@ -22,7 +25,7 @@ class AuthController extends Controller
 
         $token = auth()->attempt($credentials);
         if (!$token) {
-            return response()->json(['error' => 'Unauthorized'], Response::HTTP_UNAUTHORIZED);
+            throw new UserUnauthorizedException();
         }
 
         return response()->json(['token' => $token]);
@@ -38,6 +41,8 @@ class AuthController extends Controller
         ]);
 
         $token = JWTAuth::fromUser($user);
+
+        UserRegistered::dispatch($user);
 
         return response()->json(['token' => $token]);
     }

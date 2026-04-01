@@ -57,6 +57,6 @@ class CartController extends Controller
 
         $cartService->deleteItem(item: $item);
 
-        return response()->json(['message' => 'Товар удалён'], Response::HTTP_NO_CONTENT);
+        return response()->json(['message' => __(key: 'cart::carts.item_deleted')], Response::HTTP_NO_CONTENT);
     }
 }

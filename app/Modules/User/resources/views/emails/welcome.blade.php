@@ -1,0 +1,1 @@
+<p>{{ __('user::emails.welcome_text') }}</p>

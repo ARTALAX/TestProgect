@@ -16,7 +16,7 @@ class ReportController extends Controller
     {
         $report = $service->createAndDispatch(periodStart: $request->getPeriodStart(), periodEnd: $request->getPeriodEnd());
 
-        return response()->json(['message' => 'Job dispatched', 'report_id' => $report->id]);
+        return response()->json(['message' => __(key: 'report::reports.job_dispatched'), 'report_id' => $report->id]);
     }
 
     public function show(int $id): JsonResponse
