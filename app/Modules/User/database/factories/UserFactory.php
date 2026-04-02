@@ -3,6 +3,7 @@
 namespace Modules\User\Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Modules\User\Enums\UserRole;
 use Modules\User\Models\User;
 
 /**
@@ -23,7 +24,7 @@ class UserFactory extends Factory
         return [
             'name' => $this->faker->name(),
             'email' => $this->faker->unique()->safeEmail(),
-            'role' => $this->faker->randomElement(['guest', 'user', 'admin']),
+            'role' => $this->faker->randomElement(UserRole::cases()),
             'password' => bcrypt(value: 'password'),
         ];
     }

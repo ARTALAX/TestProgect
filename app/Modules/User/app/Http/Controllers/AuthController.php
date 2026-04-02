@@ -5,6 +5,7 @@ namespace Modules\User\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Hash;
+use Modules\User\Enums\UserRole;
 use Modules\User\Events\UserRegistered;
 use Modules\User\Exceptions\UserUnauthorizedException;
 use Modules\User\Http\Requests\LoginRequest;
@@ -37,7 +38,7 @@ class AuthController extends Controller
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'role' => 'user',
+            'role' => UserRole::USER,
         ]);
 
         $token = JWTAuth::fromUser($user);
