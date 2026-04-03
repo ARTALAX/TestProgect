@@ -9,6 +9,7 @@ use Illuminate\Notifications\DatabaseNotificationCollection;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Carbon;
 use Modules\User\Database\Factories\UserFactory;
+use Modules\User\Enums\UserRole;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 
 // use Modules\User\Database\Factories\UserFactory;
@@ -17,7 +18,7 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
  * @property int                                                       $id
  * @property string                                                    $name
  * @property string                                                    $email
- * @property string                                                    $role
+ * @property UserRole                                                  $role
  * @property string                                                    $password
  * @property null|Carbon                                               $created_at
  * @property null|Carbon                                               $updated_at
@@ -57,6 +58,9 @@ class User extends Authenticatable implements JWTSubject
     ];
     protected $hidden = [
         'password',
+    ];
+    protected $casts = [
+        'role' => UserRole::class,
     ];
 
     public function getJWTIdentifier()

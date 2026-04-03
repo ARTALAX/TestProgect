@@ -4,6 +4,7 @@ namespace Modules\User\Http\Middleware;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Modules\User\Enums\UserRole;
 
 class RoleMiddleware
 {
@@ -18,7 +19,9 @@ class RoleMiddleware
     public function handle($request, \Closure $next, ...$roles): mixed
     {
         $user = $request->user();
-        if (!$user || !in_array(needle: $user->role, haystack: $roles, strict: true)) {
+        $userRole = $user?->role instanceof UserRole ? $user->role->value : $user?->role;
+
+        if (!$user || !in_array(needle: $userRole, haystack: $roles, strict: true)) {
             return response()->json(['error' => 'Forbidden'], Response::HTTP_FORBIDDEN);
         }
 
