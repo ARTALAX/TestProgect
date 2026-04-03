@@ -37,7 +37,7 @@ jobs:
           docker exec app_php bash -c "
             cd /var/www/app &&
             vendor/bin/pest Modules/*/tests/Feature/ &&
-            ./vendor/bin/php-cs-fixer fix ./app/Modules --dry-run --diff &&
+            ./vendor/bin/php-cs-fixer fix ../Modules --dry-run --diff &&
             ./vendor/bin/phpstan analyse --memory-limit=1G &&
             ./vendor/bin/rector Modules --dry-run
           "
