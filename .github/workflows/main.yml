@@ -31,20 +31,6 @@ jobs:
             composer install --prefer-dist --no-progress --no-interaction &&
             php artisan key:generate
           "
-      - name: Debug paths
-        run: |
-          docker exec app_php bash -c "
-            pwd &&
-            ls -la &&
-            cd /var/www/app &&
-            echo '--- /var/www/app ---' &&
-            pwd &&
-            ls -la &&
-            echo '--- app ---' &&
-            ls -la /var/www/app/app || true &&
-            echo '--- Modules ---' &&
-            ls -la /var/www/app/Modules || true
-          "
       - name: Run Tests & Code Quality
         run: |
           docker exec app_php bash -c "
